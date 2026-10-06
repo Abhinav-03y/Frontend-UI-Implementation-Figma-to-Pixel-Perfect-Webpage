@@ -1,4 +1,4 @@
-/* ========== Design Tokens ========== */
+/* ===== Design tokens ===== */
 :root {
   /* Colors */
   --primary-accent: #FFB400;
@@ -13,142 +13,91 @@
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-round: 50%;
-  --radius-pill: 999px;
   --shadow-card: 0 4px 18px rgba(0, 0, 0, 0.05);
 
   /* Typography */
   --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* ========== Base ========== */
+/* ===== Base ===== */
 body {
   font-family: var(--font-family);
-  background-color: var(--bg-page);
   color: var(--text-primary);
-}
-
-.container {
-  width: 100%;
-  max-width: var(--content-max-width);
-  margin-inline: auto;
-  padding-inline: 20px;
-}
-
-/* ========== Header / Navbar ========== */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
   background-color: var(--bg-page);
+}
+
+/* ===== Header / Navbar ===== */
+.header {
+  height: 152px;
+  padding: 0 84px 0 98px;
+  background-color: var(--bg-card);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .nav {
+  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-block: 20px;
 }
 
-.nav-brand {
-  color: var(--text-primary);
+.nav-logo img {
+  width: 152px;
+  height: 62px;
 }
 
 .nav-list {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 15px;
 }
 
 .nav-link {
-  display: inline-block;
-  padding: 8px 18px;
-  font-size: 15px;
+  display: block;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm); /* 6px */
+  font-size: 14px;
   font-weight: 500;
-  color: var(--text-primary);
-  border-radius: var(--radius-pill);
+  line-height: 20px;
+  color: #000000;
   transition: color 0.25s ease, background-color 0.25s ease;
 }
 
 .nav-link:hover {
-  color: var(--primary-accent);
+  background-color: var(--input-bg);
 }
 
-/* Active pill badge */
+/* Active page: yellow pill */
 .nav-link.active {
   background-color: var(--primary-accent);
-  color: var(--text-primary);
-  font-weight: 600;
+  margin-right: 13px; /* extra space after Home, as in the design */
 }
 
-.nav-link.active:hover {
-  color: var(--text-primary);
-}
-
+/* Visible keyboard focus */
 .nav-link:focus-visible,
-.nav-brand:focus-visible,
-.nav-toggle:focus-visible {
-  outline: 2px solid var(--primary-accent);
-  outline-offset: 3px;
+.nav-logo:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 2px;
 }
 
-/* ========== Mobile toggle (hidden on desktop) ========== */
-.nav-toggle {
-  display: none;
-  flex-direction: column;
-  gap: 5px;
-  padding: 8px;
-}
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .header {
+    height: auto;
+    padding: 20px;
+  }
 
-.nav-toggle span {
-  width: 24px;
-  height: 2px;
-  background-color: var(--text-primary);
-  transition: transform 0.25s ease, opacity 0.25s ease;
-}
-
-.nav-toggle[aria-expanded="true"] span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
-}
-.nav-toggle[aria-expanded="true"] span:nth-child(2) {
-  opacity: 0;
-}
-.nav-toggle[aria-expanded="true"] span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
-}
-
-/* ========== Responsive ========== */
-@media (max-width: 860px) {
-  .nav-toggle {
-    display: flex;
+  .nav {
+    flex-direction: column;
+    gap: 16px;
   }
 
   .nav-list {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 4px;
-    padding: 16px 20px;
-    background-color: var(--bg-card);
-    box-shadow: var(--shadow-card);
-
-    /* hidden state */
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
-    transition: opacity 0.25s ease, transform 0.25s ease, visibility 0.25s;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .nav-list.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-  }
-
-  .nav-link {
-    display: block;
-    text-align: center;
+  .nav-link.active {
+    margin-right: 0;
   }
 }
