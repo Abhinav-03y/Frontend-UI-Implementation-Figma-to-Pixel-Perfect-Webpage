@@ -32,7 +32,9 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 152px;             /* <-- change this */
+  height: 152px;
+  max-width: 1440px;
+  margin-inline: auto;
   padding-inline: 83px;
 }
 
@@ -144,10 +146,25 @@ body {
 /* ===== Hero (design frame: 1440 x 630) ===== */
 .hero {
   position: relative;
+  background-color: #fff;           /* full-width white band, like the design */
+}
+
+/* Ground line keeps going to the screen edge on screens wider than 1440px */
+.hero::after {
+  content: "";
+  position: absolute;
+  left: calc(50% + 720px);
+  right: 0;
+  bottom: 1px;
+  height: 3px;
+  background-color: #CCCCCC;
+}
+
+.hero-frame {
+  position: relative;
   max-width: 1440px;
   height: min(43.75vw, 630px);      /* 630 / 1440 */
   margin-inline: auto;
-  background-color: #fff;
   overflow: hidden;
 }
 
@@ -185,24 +202,13 @@ body {
   z-index: 1;
 }
 
-/* ===== Floating outline shapes ===== */
-/* ===== Floating outline shapes ===== */
+/* ===== Outline shapes (fixed at their design positions) ===== */
 .shape {
   position: absolute;
   left: calc(var(--x) / 1440 * 100%);
   top:  calc(var(--y) / 630 * 100%);
   z-index: 3;
-  animation-duration: 5s;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  animation-delay: var(--d);
 }
-
-/* Each shape gets a different path (the 7 shapes are the first 7 children of .hero) */
-.shape:nth-child(3n + 1) { animation-name: float-a; }
-.shape:nth-child(3n + 2) { animation-name: float-b; animation-duration: 6s; }
-.shape:nth-child(3n)     { animation-name: float-c; animation-duration: 7s; }
-
 .shape-circle,
 .shape-diamond {
   width: 22px;
@@ -210,41 +216,16 @@ body {
   border: 2px solid currentColor;
 }
 .shape-circle  { border-radius: 50%; }
-
-/* Diamonds also wobble (float + rotate run together) */
-.shape-diamond {
-  rotate: 27deg;
-  animation-name: float-b, wobble;
-}
+.shape-diamond { rotate: 27deg; }
 
 .c-yellow { color: #FFC333; }
 .c-green  { color: #37FF33; }
 .c-blue   { color: #336CFF; }
 
-@keyframes float-a {
-  0%, 100% { transform: translate(0, 0); }
-  50%      { transform: translate(10px, -18px); }
-}
-@keyframes float-b {
-  0%, 100% { transform: translate(0, 0); }
-  50%      { transform: translate(-14px, 16px); }
-}
-@keyframes float-c {
-  0%, 100% { transform: translate(0, 0) rotate(0deg); }
-  50%      { transform: translate(12px, 14px) rotate(15deg); }
-}
-@keyframes wobble {
-  0%, 100% { rotate: 27deg; }
-  50%      { rotate: 55deg; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .shape { animation: none; }
-}
-
 /* ===== Hero: stacked layout below 1200px ===== */
 @media (max-width: 1199px) {
-  .hero {
+  .hero::after { display: none; }
+  .hero-frame {
     height: auto;
     display: flex;
     flex-direction: column;
