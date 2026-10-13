@@ -1,6 +1,6 @@
 :root {
   --primary-accent: #FFB400;
-  --bg-page: #F7F8FA;
+  --bg-page: #F0F0F6;
   --bg-card: #FFFFFF;
   --text-primary: #2B2B2B;
   --text-muted: #767676;
@@ -246,7 +246,7 @@ body {
   margin-inline: auto;
 }
 .section {
-  padding-block: 80px;
+  padding-block: 60px 0;              /* 60px gap between sections, as in the full-page design */
   scroll-margin-top: 152px;          /* sticky navbar height */
 }
 .section-head {
@@ -269,7 +269,6 @@ body {
 }
 
 /* ===== Projects ===== */
-.projects { background-color: #fff; }
 
 .project-grid {
   display: grid;
@@ -318,7 +317,11 @@ body {
   border-radius: var(--radius-sm);
 }
 
-/* Description truncated to 2 lines */
+/* Description: the 2 lines of the design */
+.project-desc span {
+  display: block;
+  white-space: nowrap;
+}
 .project-desc {
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -352,27 +355,27 @@ body {
   .project-grid { grid-template-columns: repeat(2, 1fr); gap: 28px; }
 }
 @media (max-width: 620px) {
-  .section { padding-block: 56px; scroll-margin-top: 100px; }
+  .section { padding-block: 40px 0; scroll-margin-top: 100px; }
   .section-title { font-size: 28px; }
   .project-grid { grid-template-columns: 1fr; }
 }
 
-
 /* ===== Recommendations ===== */
 .recommendations {
+  padding-top: 58px;                 /* 2px tighter than the other sections in the design */
   --strip-bg: #F0F0F6;             /* grey strips left and right of the carousel */
-  --stage-bg: #fff;                /* area behind the cards */
-  background-color: #fff;
+  --stage-bg: #F0F0F6;             /* grey behind the white cards */
 }
 .recommendations .section-head { margin-bottom: 45px; }
 .recommendations .section-subtitle { max-width: 520px; margin-top: 6px; }
 
+/* Grey band, white viewport in the middle (97px side margins on a 1440 frame) */
 .reviews-band {
   height: 327px;
   background-color: var(--strip-bg);
 }
 .reviews-viewport {
-  width: min(1246px, 100% - 40px);   /* 97px side margins on a 1440 frame */
+  width: min(1246px, 100% - 40px);
   height: 100%;
   margin-inline: auto;
   overflow: hidden;
@@ -396,6 +399,7 @@ body {
   padding-right: 25px;
 }
 
+/* White card, 340 x 327, square corners */
 .review {
   width: 340px;
   height: 327px;
@@ -426,7 +430,8 @@ body {
   line-height: 24px;
   color: var(--text-muted);
 }
-.review-text span {                /* the 4 line breaks of the design */
+
+.review-text span {            /* the 4 line breaks of the design, kept regardless of font */
   display: block;
   white-space: nowrap;
 }
@@ -477,7 +482,7 @@ body {
   border-radius: var(--radius-round);
   transition: background-color 0.25s ease, transform 0.25s ease;
 }
-.slider-dot::before {              /* bigger click / tap area */
+.slider-dot::before {            /* bigger click / tap area */
   content: "";
   position: absolute;
   inset: -6px;
@@ -495,8 +500,8 @@ body {
 @media (max-width: 620px) {
   .reviews-band { height: 340px; }
 }
+
 /* ===== Contact (design frame: 1440 wide, cards start 86px below the headings) ===== */
-.contact { background-color: #F0F0F6; }   /* grey page behind the white cards */
 
 .contact-grid {
   display: grid;
@@ -549,7 +554,7 @@ body {
 .field textarea {
   height: 210px;
   padding-block: 14px;
-  resize: vertical;
+  resize: none;
 }
 .field input:focus-visible,
 .field textarea:focus-visible {
@@ -654,10 +659,12 @@ body {
   .info-card, .info-card:nth-child(3) { height: auto; margin-top: 0; padding-bottom: 16px; }
   .form-actions { flex-wrap: wrap; }
 }
+
+
 /* ===== Partner strip (white, 144px) ===== */
 .partners {
   height: 144px;
-  background-color: #fff;
+  margin-top: 58px;                  /* gap after the Contact section */
 }
 .partner-row {
   display: flex;
@@ -734,7 +741,6 @@ body {
   font-size: 16px;
   line-height: 24px;
   color: var(--text-muted);
-  background-color: #fff;
 }
 
 @media (max-width: 1100px) {
