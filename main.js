@@ -18,245 +18,141 @@ navLinks.forEach(link => {
 });
 
 // ===== Recommendations carousel =====
-function initRecommendationSlider() {
-  const slider = document.getElementById('recSlider');
-  const dotsWrap = document.querySelector('.slider-dots');
-  if (!slider || !dotsWrap) return;
+const viewport = document.querySelector('.reviews-viewport');
+const track = document.querySelector('.reviews-track');
+const slides = track ? Array.from(track.children) : [];
+const dots = document.querySelectorAll('.slider-dot');
+let currentIndex = 2;                       // 3rd dot is active in the design
 
-  const track = slider.querySelector('.slider-track');
-  const originals = Array.from(track.children);
-  const n = originals.length;
-  if (n < 2) return;
+function updateSlide(index, animate = true) {
+  currentIndex = Math.max(0, Math.min(index, slides.length - 1));
 
-  const DURATION = 500;
-  const AUTOPLAY_MS = 4000;
-  const SWIPE_THRESHOLD = 50;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // scale the 1246px design down on narrow screens (never below 0.85),
+  // so the cut-off cards at both edges stay visible
+  const scale = Math.min(1, Math.max(0.85, viewport.clientWidth / 1246));
+  viewport.parentElement.style.setProperty('--s', scale);
 
-  // Build clones: n before, n after
-  const makeClone = (el) => {
-    const c = el.cloneNode(true);
-    c.setAttribute('aria-hidden', 'true');
-    c.classList.add('is-clone');
-    return c;
-  };
-  originals.slice().reverse().forEach((el) => track.insertBefore(makeClone(el), track.firstChild));
-  originals.forEach((el) => track.appendChild(makeClone(el)));
+  // centre the active review card inside the (unscaled) stage
+  const slide = slides[currentIndex];
+  const card = slide.firstElementChild;
+  const stageWidth = viewport.clientWidth / scale;
+  // design sits 1px left of true centre
+  const offset = Math.floor((stageWidth - card.offsetWidth) / 2) - 1 - slide.offsetLeft;
 
-  const cards = Array.from(track.children);
-  let active = Math.min(2, n - 1); // 0…n-1, shown by the dots
-  let pos = n + active;            // index in the full track
-  let busy = false;
-  let timer = null;
-  let settleTimer = null;
+  track.classList.toggle('is-ready', animate);
+  track.style.transform = `translateX(${offset}px)`;
 
-  // Dots
-  const dots = originals.map((_, i) => {
-    const dot = document.createElement('button');
-    dot.type = 'button';
-    dot.className = 'dot';
-    dot.setAttribute('role', 'tab');
-    dot.setAttribute('aria-label', `Show recommendation ${i + 1}`);
-    dot.addEventListener('click', () => {
-      goTo(i);
-      restartAutoplay();
-    });
-    dotsWrap.appendChild(dot);
-    return dot;
+  dots.forEach((dot, i) => {
+    const isActive = i === currentIndex;
+    dot.classList.toggle('active', isActive);
+    if (isActive) dot.setAttribute('aria-current', 'true');
+    else dot.removeAttribute('aria-current');
+  });
+}
+
+if (track) {
+  dots.forEach((dot, index) => dot.addEventListener('click', () => updateSlide(index)));
+
+  // keyboard: arrow keys when the carousel has focus
+  viewport.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') updateSlide(currentIndex + 1);
+    if (e.key === 'ArrowLeft') updateSlide(currentIndex - 1);
   });
 
-  // X offset that centres card `index` inside the viewport
-  const offsetFor = (index) => {
-    const card = cards[index];
-    return slider.clientWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
-  };
-
-  const setTransform = (x, animate) => {
-    track.style.transition = animate && !reduceMotion
-      ? `transform ${DURATION}ms cubic-bezier(0.22, 1, 0.36, 1)`
-      : 'none';
-    track.style.transform = `translate3d(${x}px, 0, 0)`;
-  };
-
-  const updateDots = () => {
-    dots.forEach((dot, i) => {
-      dot.classList.toggle('active', i === active);
-      dot.setAttribute('aria-selected', i === active);
-    });
-  };
-
-  // After a move, jump from a clone back to the identical original
-  const settle = () => {
-    busy = false;
-    if (pos < n || pos >= 2 * n) {
-      pos = n + active;
-      setTransform(offsetFor(pos), false);
-    }
-  };
-
-  function move(delta) {
-    if (busy) return;
-    busy = true;
-    pos += delta;
-    active = (((active + delta) % n) + n) % n;
-    setTransform(offsetFor(pos), true);
-    updateDots();
-    clearTimeout(settleTimer);
-    settleTimer = setTimeout(settle, reduceMotion ? 0 : DURATION + 30);
-  }
-
-  // Dot click: take the shortest way round
-  function goTo(index) {
-    const half = Math.floor(n / 2);
-    const delta = ((index - active + n + half) % n) - half;
-    if (delta !== 0) move(delta);
-  }
-
-  const next = () => move(1);
-  const prev = () => move(-1);
-
-  // Autoplay
-  function startAutoplay() {
-    if (reduceMotion || timer) return;
-    timer = setInterval(next, AUTOPLAY_MS);
-  }
-  function stopAutoplay() {
-    clearInterval(timer);
-    timer = null;
-  }
-  function restartAutoplay() {
-    stopAutoplay();
-    startAutoplay();
-  }
-
-  slider.addEventListener('mouseenter', stopAutoplay);
-  slider.addEventListener('mouseleave', () => !dragging && startAutoplay());
-  dotsWrap.addEventListener('focusin', stopAutoplay);
-  dotsWrap.addEventListener('focusout', startAutoplay);
-  document.addEventListener('visibilitychange', () => (document.hidden ? stopAutoplay() : startAutoplay()));
-
-  // Drag / swipe: the strip follows the pointer, then snaps
-  let dragging = false;
-  let startX = 0;
-  let baseX = 0;
-
-  slider.addEventListener('pointerdown', (e) => {
-    if (busy) return;
-    dragging = true;
-    startX = e.clientX;
-    baseX = offsetFor(pos);
-    slider.setPointerCapture(e.pointerId);
-    slider.classList.add('dragging');
-    stopAutoplay();
-    setTransform(baseX, false);
+  // touch / mouse swipe
+  let startX = null;
+  viewport.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+  viewport.addEventListener('pointerup', (e) => {
+    if (startX === null) return;
+    const delta = e.clientX - startX;
+    if (Math.abs(delta) > 50) updateSlide(currentIndex + (delta < 0 ? 1 : -1));
+    startX = null;
   });
 
-  slider.addEventListener('pointermove', (e) => {
-    if (!dragging) return;
-    setTransform(baseX + (e.clientX - startX), false);
-  });
-
-  const endDrag = (e) => {
-    if (!dragging) return;
-    dragging = false;
-    slider.classList.remove('dragging');
-    const dx = e.clientX - startX;
-    if (Math.abs(dx) > SWIPE_THRESHOLD) {
-      dx < 0 ? next() : prev();
-    } else {
-      setTransform(baseX, true); // snap back
-    }
-    startAutoplay();
-  };
-  slider.addEventListener('pointerup', endDrag);
-  slider.addEventListener('pointercancel', endDrag);
-
-  // Let wheel/trackpad input browse cards without blocking page scrolling.
-  slider.addEventListener('wheel', (e) => {
-    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-    if (Math.abs(delta) < 10 || busy) return;
-    delta > 0 ? next() : prev();
-    restartAutoplay();
-  }, { passive: true });
-
-  // Arrow keys while a dot is focused
-  dotsWrap.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowRight') { next(); }
-    if (e.key === 'ArrowLeft') { prev(); }
-  });
-
-  // Keep the active card centred when the window resizes
-  window.addEventListener('resize', () => setTransform(offsetFor(pos), false));
-
-  // Wait for avatars to load so card positions are final, then centre
-  const init = () => {
-    setTransform(offsetFor(pos), false);
-    updateDots();
-    startAutoplay();
-  };
-  init();
-  window.addEventListener('load', () => setTransform(offsetFor(pos), false));
+  window.addEventListener('resize', () => updateSlide(currentIndex, false));
+  window.addEventListener('load', () => updateSlide(currentIndex, false));
+  updateSlide(currentIndex, false);
 }
 
 // ===== Contact form validation =====
-function initContactForm() {
-  const form = document.getElementById('contactForm');
-  if (!form) return;
+(() => {
+  const contactForm = document.getElementById('contactForm');
+  if (!contactForm) return;
 
   const status = document.getElementById('formStatus');
+  const submitBtn = contactForm.querySelector('button[type="submit"]');
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const setError = (input, message) => {
-    const field = input.closest('.field');
-    const error = field.querySelector('.field-error');
-    field.classList.toggle('invalid', Boolean(message));
-    input.setAttribute('aria-invalid', Boolean(message));
-    if (error) error.textContent = message || '';
+  // required fields and their messages
+  const rules = {
+    fullName: { required: 'Please enter your full name.' },
+    email:    { required: 'Please enter your email address.',
+                invalid: 'Please enter a valid email address.' },
+    message:  { required: 'Please write a message.' },
   };
 
-  const validate = () => {
-    const name = form.fullName;
-    const email = form.email;
-    let ok = true;
+  function showError(input, text) {
+    const error = document.getElementById(`${input.id}-error`);
+    input.setAttribute('aria-invalid', 'true');
+    error.textContent = text;
+    error.hidden = false;
+  }
 
-    if (!name.value.trim()) {
-      setError(name, 'Enter your full name.');
-      ok = false;
-    } else setError(name, '');
+  function clearError(input) {
+    const error = document.getElementById(`${input.id}-error`);
+    input.removeAttribute('aria-invalid');
+    error.textContent = '';
+    error.hidden = true;
+  }
 
-    if (!email.value.trim()) {
-      setError(email, 'Enter your email address.');
-      ok = false;
-    } else if (!emailPattern.test(email.value.trim())) {
-      setError(email, 'Enter a valid email address, like name@example.com.');
-      ok = false;
-    } else setError(email, '');
+  // returns true when the field is valid
+  function validateField(input) {
+    const rule = rules[input.id];
+    const value = input.value.trim();
 
-    return ok;
-  };
+    if (!value) { showError(input, rule.required); return false; }
+    if (input.id === 'email' && !emailPattern.test(value)) {
+      showError(input, rule.invalid);
+      return false;
+    }
+    clearError(input);
+    return true;
+  }
 
-  ['fullName', 'email'].forEach((id) => {
-    form[id].addEventListener('input', () => {
-      if (form[id].closest('.field').classList.contains('invalid')) validate();
+  // fix errors as the visitor types
+  Object.keys(rules).forEach((id) => {
+    const input = contactForm.querySelector(`#${id}`);
+    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('input', () => {
+      if (input.getAttribute('aria-invalid') === 'true') validateField(input);
     });
   });
 
-  form.addEventListener('submit', (e) => {
+  contactForm.addEventListener('submit', (e) => {
     e.preventDefault();
     status.className = 'form-status';
     status.textContent = '';
 
-    if (!validate()) {
-      status.textContent = 'Fix the highlighted fields and send again.';
+    const inputs = Object.keys(rules).map((id) => contactForm.querySelector(`#${id}`));
+    const results = inputs.map(validateField);
+
+    if (results.includes(false)) {
+      inputs[results.indexOf(false)].focus();        // jump to the first problem
+      status.classList.add('is-error');
+      status.textContent = 'Please fix the highlighted fields.';
       return;
     }
 
-    // TODO: send `data` to your backend or a form service (Formspree, EmailJS, etc.)
-    const data = Object.fromEntries(new FormData(form).entries());
-    console.log('Contact form submitted:', data);
+    // Simulated submission feedback
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'SENDING...';
 
-    status.classList.add('success');
-    status.textContent = 'Message sent. I will get back to you soon.';
-    form.reset();
+    setTimeout(() => {
+      contactForm.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'SEND MESSAGE';
+      status.classList.add('is-success');
+      status.textContent = 'Message received! Thank you for getting in touch.';
+    }, 1000);
   });
-}
+})();

@@ -363,15 +363,16 @@ body {
 /* ===== Recommendations ===== */
 .recommendations {
   padding-top: 58px;                 /* 2px tighter than the other sections in the design */
-  --strip-bg: #F0F0F6;             /* grey strips left and right of the carousel */
-  --stage-bg: #F0F0F6;             /* grey behind the white cards */
+  --strip-bg: #F0F0F6;             /* band behind the whole carousel */
+  --stage-bg: #F0F0F6;             /* area behind the white cards */
 }
 .recommendations .section-head { margin-bottom: 45px; }
 .recommendations .section-subtitle { max-width: 520px; margin-top: 6px; }
 
-/* Grey band, white viewport in the middle (97px side margins on a 1440 frame) */
+/* Carousel band: the viewport is 1246px wide (97px side margins on a 1440 frame) and clips the cards */
 .reviews-band {
-  height: 327px;
+  --s: 1;                            /* scale factor, set by main.js on screens narrower than 1286px */
+  height: calc(327px * var(--s));
   background-color: var(--strip-bg);
 }
 .reviews-viewport {
@@ -384,6 +385,15 @@ body {
 .reviews-viewport:focus-visible {
   outline: 2px solid var(--primary-accent);
   outline-offset: -2px;
+}
+
+/* The stage keeps the 1246 x 327 design layout and is scaled down on small screens,
+   so the cut-off cards at the left and right edges stay visible */
+.reviews-stage {
+  width: calc(100% / var(--s));
+  height: 327px;
+  transform: scale(var(--s));
+  transform-origin: 0 0;
 }
 
 .reviews-track {
@@ -496,9 +506,6 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .reviews-track.is-ready { transition: none; }
-}
-@media (max-width: 620px) {
-  .reviews-band { height: 340px; }
 }
 
 /* ===== Contact (design frame: 1440 wide, cards start 86px below the headings) ===== */
@@ -661,7 +668,7 @@ body {
 }
 
 
-/* ===== Partner strip (white, 144px) ===== */
+/* ===== Partner strip (144px, sits on the grey page) ===== */
 .partners {
   height: 144px;
   margin-top: 58px;                  /* gap after the Contact section */
@@ -683,7 +690,7 @@ body {
 }
 .footer-grid {
   display: grid;
-  grid-template-columns: 464px 311px 344px 1fr;
+  grid-template-columns: minmax(0, 464fr) minmax(0, 311fr) minmax(0, 344fr) minmax(0, 125fr);   /* 464 / 311 / 344 / 125 px at 1440 */
   width: min(1244px, 100% - 40px);
   margin-inline: auto;
 }
