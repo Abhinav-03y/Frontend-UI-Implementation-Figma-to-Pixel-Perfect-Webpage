@@ -131,110 +131,111 @@ body {
   display: flex;
 }
 
-/* ==========================================================================
-   Section headings (Projects, Recommendations)
-   ========================================================================== */
-.section-head {
+/* ==================== 3. PROJECTS SHOWCASE ==================== */
+.projects {
+  padding: 50px 0;
+}
+
+.projects-container {
+  margin: 0 85.263px;
+}
+
+.section-header {
   text-align: center;
+  margin: 0 auto 39.555px;
 }
 
 .section-title {
-  font-size: var(--fs-section);
+  font-size: 28.128px;
   font-weight: 700;
-  line-height: 39px;
-  color: var(--text-primary);
+  margin-bottom: 10.548px;
 }
 
-.section-text {
-  margin: 14px auto 0;
-  max-width: 620px;
-  font-size: 15px;
-  line-height: 24px;
+.section-subtitle {
+  text-transform: capitalize;
+  font-size: 13.185px;
   color: var(--text-muted);
-}
-
-/* ==========================================================================
-   3. Projects
-   ========================================================================== */
-.projects {
-  padding-top: var(--section-space);
+  word-spacing: 1.2px;
+  letter-spacing: -0.2px;
 }
 
 .project-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 44px;
-  margin: 43.5px -1px 0; /* cards are 386px wide, 2px more than the content box */
-}
-
-.project-item {
-  display: flex;
+  gap: 39px;
 }
 
 .project-card {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  overflow: hidden;
-  border: var(--border-card);
-  border-radius: 12.5px;
   background: var(--bg-card);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
 }
 
-/* hover is read from the static <li>, so the lift can't pull the card out from under the cursor */
-.project-item:hover .project-card {
+.project-card:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-card-hover);
+  box-shadow: 0 10.548px 26.37px rgba(0, 0, 0, 0.2);
 }
 
 .project-cover {
   width: 100%;
-  height: auto;
-  aspect-ratio: 386 / 256;
-  object-fit: cover;
+  background-color: var(--input-bg);
+  overflow: hidden;
 }
 
-.project-body {
-  padding: 14px 16px 20px;
+.project-cover img {
+  border: 1.5px solid rgba(0, 0, 0, 0.2);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-top-left-radius: var(--radius-md);
+  border-top-right-radius: var(--radius-md);
+}
+
+.project-info {
+  text-transform: capitalize;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+  padding: 12px 14px 15px 14px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  border-bottom-left-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
 }
 
 .project-title {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 1px;
   color: var(--text-primary);
 }
 
-.project-text {
-  display: -webkit-box;
-  margin-top: 2px;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  font-size: 14px;
-  line-height: 24px;
+.project-desc {
+  font-size: 12px;
+  word-spacing: 1px;
+  line-height: 1.7;
   color: var(--text-muted);
+  margin-bottom: 8px;
 }
 
-.tag-list {
+.project-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 9px;
 }
 
 .tag {
-  height: 25.3px;
-  padding: 0 13px;
-  border: var(--border-chip);
-  border-radius: var(--radius-pill);
-  background: var(--chip-bg);
-  font-size: 13px;
-  line-height: 23.3px;
-  color: var(--text-strong);
+  display: inline-flex;
+  align-items: center;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 12px;
+  border-radius: 50px;
 }
 
 /* ==========================================================================
