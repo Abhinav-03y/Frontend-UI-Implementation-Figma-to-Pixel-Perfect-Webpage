@@ -1,73 +1,46 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rayan Adlrdard | Front-end Developer</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frontend Engineering Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <script>
-    history.scrollRestoration = 'manual';
-    window.scrollTo(0, 0);
-  </script>
-
-  <link rel="stylesheet" href="css/reset.css">
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
-
-  <header class="site-header">
-    <nav class="navbar container" aria-label="Primary">
-      <a class="brand" href="#home" aria-label="Rayan Adlrdard, home">
-        <img src="assets/images/logo.png" alt="" width="158" height="76">
+  <header class="navbar-wrapper">
+    <nav class="navbar">
+      <a href="#" class="logo">
+        <img src="assets/images/logo.png" alt="Brand Logo" />
       </a>
-      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
-        <span class="nav-toggle-bar" aria-hidden="true"></span>
-        <span class="visually-hidden">Menu</span>
-      </button>
-      <ul class="nav-menu" id="nav-menu">
-        <li><a class="nav-link is-active" href="#home" aria-current="true">Home</a></li>
-        <li><a class="nav-link" href="#projects">Skills</a></li>
-        <li><a class="nav-link" href="#projects">Education</a></li>
-        <li><a class="nav-link" href="#projects">Projects</a></li>
-        <li><a class="nav-link" href="#recommendations">Recommendations</a></li>
-        <li><a class="nav-link" href="#contact">Contact</a></li>
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-link active">Home</a></li>
+        <li><a href="#skills" class="nav-link">Skills</a></li>
+        <li><a href="#education" class="nav-link">Education</a></li>
+        <li><a href="#projects" class="nav-link">Projects</a></li>
+        <li><a href="#recommendations" class="nav-link">Recommendations</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
       </ul>
     </nav>
   </header>
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        I'm Rayan AdIrdard <br>
+        <span class="highlight">Front-end</span> Developer
+      </h1>
+      <p class="hero-description">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et, volutpat feugiat<br>placerat lobortis. Natoque rutrum semper sed suspendisse nunc lectus.</p>
+      <a href="#contact" class="btn">HIRE ME &rarr;</a>
+    </div>
 
-  <main id="main">
-    <section class="hero" id="home" aria-labelledby="hero-title">
-      <img class="hero-art" src="assets/images/hero-coder.svg" alt="Illustration of a developer sitting on a desk next to a computer monitor showing code" width="808.01" height="550.4">
-      <div class="hero-inner container">
-        <div class="hero-content">
-          <h1 class="hero-title" id="hero-title">
-            I’m Rayan Adlrdard <br>
-            <span class="highlight">Front-end</span> Developer
-          </h1>
-          <p class="hero-text">Lorem Ipsum Dolor Sit Amet, Consectetur Adipiscing Elit. Et, Volutpat Feugiat Placerat Lobortis. Natoque Rutrum Semper Sed Suspendisse Nunc Lectus.</p>
-          <a class="btn btn-primary btn-hire" href="#contact">
-            HIRE ME
-            <img src="assets/icons/icon-arrow.svg" alt="" width="11" height="10">
-          </a>
-        </div>
-
-
-        <div class="hero-shapes" aria-hidden="true">
-          <img class="shape shape-ring-yellow" src="assets/images/ring-yellow.svg" alt="">
-          <img class="shape shape-ring-green" src="assets/images/ring-green.svg" alt="">
-          <img class="shape shape-ring-green-2" src="assets/images/ring-green.svg" alt="">
-          <img class="shape shape-ring-yellow-2" src="assets/images/ring-yellow.svg" alt="">
-          <img class="shape shape-diamond-yellow" src="assets/images/diamond-yellow.svg" alt="">
-          <img class="shape shape-diamond-blue" src="assets/images/diamond-blue.svg" alt="">
-          <img class="shape shape-triangle" src="assets/images/triangle-red.svg" alt="">
-        </div>
-      </div>
-    </section>
+    <div class="hero-image">
+      <img src="assets/images/hero-coder.svg" alt="Developer desk illustration" />
+    </div>
+  </section>
 
     <section class="projects container" id="projects" aria-labelledby="projects-title">
       <header class="section-head">
